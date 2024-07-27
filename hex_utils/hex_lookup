@@ -2,7 +2,8 @@ local hexLookup = {
     symbol_registry = {}
 }
 
-function hexLookup:build_symbol_registry(json_file_path)
+function hexLookup.new(json_file_path)
+    local hexLookup = {}
     local symbol_registry_file = fs.open(json_file_path, "r")
     local symbol_file_json = textutils.unserialiseJSON(symbol_registry_file.readAll())
     if not symbol_registry_file then
@@ -16,18 +17,15 @@ function hexLookup:build_symbol_registry(json_file_path)
             ["start_direction"] = data["direction"],
         }
     end
-    self.symbol_registry = symbol_registry
+    hexLookup.symbol_registry = symbol_registry
+    return hexLookup
 end
 
 function hexLookup:get_pattern_data(pattern)
-    if self.symbol_registry == nil then
-        error("Symbol registry must be built before attempting to obtain data")
+    if self.symbol_registry[pattern] == nil then
+        return false
     else
-        if self.symbol_registry[pattern] == nil then
-            return false
-        else
-            return self.symbol_registry[pattern]
-        end
+        return self.symbol_registry[pattern]
     end
 end
 
