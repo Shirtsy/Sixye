@@ -1,0 +1,34 @@
+local function get_running_dir()
+    local running_program = shell.getRunningProgram()
+    local programName = fs.getName(running_program)
+    return running_program:sub( 1, #running_program - #programName )
+end
+
+local function build_symbol_registry()
+    local symbol_registry_file = fs.open(get_running_dir() .. "symbol-registry.json", "r")
+    local symbol_file_json = textutils.unserialiseJSON(symbol_registry_file.readAll())
+    if not symbol_registry_file then
+        error("Could not find symbol-registry.json in the current directory")
+        return
+    end
+    local symbol_registry = {}
+    for name, data in pairs(symbol_file_json) do
+        symbol_registry[data["angles"]] = {
+            ["pattern_name"] = name,
+            ["start_direction"] = data["direction"],
+        }
+    end
+    return symbol_registry
+end
+
+local symbol_registry = build_symbol_registry()
+
+local function get_pattern_data(pattern)
+    if symbol_registry[pattern] == nil then
+        return false
+    else
+        return symbol_registry[pattern]
+    end
+end
+
+return get_pattern_data
