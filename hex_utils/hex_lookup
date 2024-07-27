@@ -1,11 +1,9 @@
-local function get_running_dir()
-    local running_program = shell.getRunningProgram()
-    local programName = fs.getName(running_program)
-    return running_program:sub( 1, #running_program - #programName )
-end
+local hexLookup = {
+    symbol_registry = {}
+}
 
-local function build_symbol_registry()
-    local symbol_registry_file = fs.open(get_running_dir() .. "symbol-registry.json", "r")
+function hexLookup:build_symbol_registry(json_file_path)
+    local symbol_registry_file = fs.open(json_file_path, "r")
     local symbol_file_json = textutils.unserialiseJSON(symbol_registry_file.readAll())
     if not symbol_registry_file then
         error("Could not find symbol-registry.json in the current directory")
@@ -18,17 +16,19 @@ local function build_symbol_registry()
             ["start_direction"] = data["direction"],
         }
     end
-    return symbol_registry
+    self.symbol_registry = symbol_registry
 end
 
-local symbol_registry = build_symbol_registry()
-
-local function get_pattern_data(pattern)
-    if symbol_registry[pattern] == nil then
-        return false
+function hexLookup:get_pattern_data(pattern)
+    if self.symbol_registry == nil then
+        error("Symbol registry must be built before attempting to obtain data")
     else
-        return symbol_registry[pattern]
+        if self.symbol_registry[pattern] == nil then
+            return false
+        else
+            return self.symbol_registry[pattern]
+        end
     end
 end
 
-return get_pattern_data
+return hexLookup
