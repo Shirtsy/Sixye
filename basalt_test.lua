@@ -38,14 +38,21 @@ aList:onSelect(function(self, event, item)
 -- Vertical scrolling is pretty simple, as you can tell:
 local sub1 = main:addScrollableFrame():setSize(20, 17):setPosition(2, 2)
 
+-- Create a dropdown menu
 local aDropdown = sub1:addDropdown():setPosition(2, 22):setSize(18, 1)
+
+-- Add items to the dropdown menu
 aDropdown:addItem("Null")
 aDropdown:addItem("Vector", colors.yellow)
 aDropdown:addItem("Number", colors.yellow, colors.green)
+
+-- Function to handle dropdown value changes
 local function dropChange(self)
     local checked = self:getValue().text
     basalt.debug("The value got changed into ", checked)
 end
+
+-- Attach the change handler to the dropdown
 aDropdown:onChange(dropChange)
 
 local anInput = sub1:addInput():setPosition(2, 20):setSize(18, 1)
