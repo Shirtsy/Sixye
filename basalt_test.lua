@@ -1,4 +1,5 @@
 local basalt = require("../basalt")
+local draw_pattern, create_pattern_string = require("hex_utils.hex_render")
 
 local main = basalt.createFrame():setTheme({FrameBG = colors.purple, FrameFG = colors.black})
 
@@ -48,6 +49,7 @@ aDropdown:addItem("Number", colors.yellow, colors.green)
 
 -- Function to handle dropdown value changes
 local function dropChange(self)
+    draw_pattern('NORTH_EAST', 'qeqwqwqwqwqeqaeqeaqeqaeqaqded', 20, 1, 20, colors.yellow)
     local checked = self:getValue().text
     basalt.debug("The value got changed into ", checked)
 end
@@ -56,7 +58,7 @@ end
 aDropdown:onChange(dropChange)
 
 local anInput = sub1:addInput():setPosition(2, 20):setSize(18, 1)
-anInput:setInputType("text")
+anInput:setInputType("number")
 anInput:setDefaultText("Username")
 local function inputChange(self)
     local checked = self:getValue()

@@ -1,4 +1,4 @@
-local Vector2D = require("vector2d")
+local Vector2D = require("hex_utils.vector2d")
 
 local pattern_angles = {
     a = 120,
@@ -86,6 +86,69 @@ end
 local function draw_pattern(direction, pattern, x, y, size, color)
     local points = get_points(direction, pattern)
     render_points(x, y, points, size)
+    term.setBackgroundColor(colors.black)
 end
 
-return draw_pattern
+local function create_pattern_string(direction, pattern, width, height, line_char, bg_char)
+    local points = get_points(direction, pattern)
+    local scaled_points = scale_points(points, math.min(width, height))
+    
+    -- Create a 2D grid filled with background characters
+    local grid = {}
+    for y = 1, height do
+        grid[y] = {}
+        for x = 1, width do
+            grid[y][x] = bg_char
+        end
+    end
+    
+    -- Draw lines on the grid
+    for i = 1, (#scaled_points - 1) do
+        local start = scaled_points[i]
+        local finish = scaled_points[i+1]
+        local x1, y1 = math.floor(start.x + 0.5), math.floor(start.y + 0.5)
+        local x2, y2 = math.floor(finish.x + 0.5), math.floor(finish.y + 0.5)
+        
+        -- Use Bresenham's line algorithm to draw the line
+        local dx = math.abs(x2 - x1)
+        local dy = math.abs(y2 - y1)
+        local sx = x1 < x2 and 1 or -1
+        local sy = y1 < y2 and 1 or -1
+        local err = dx - dy
+        
+        while true do
+            if x1 > 0 and x1 <= width and y1 > 0 and y1 <= height then
+                grid[y1][x1] = line_char
+            end
+            if x1 == x2 and y1 == y2 then break end
+            local e2 = 2 * err
+            if e2 > -dy then
+                err = err - dy
+                x1 = x1 + sx
+            end
+            if e2 < dx then
+                err = err + dx
+                y1 = y1 + sy
+            end
+        end
+    end
+    
+    -- Convert the grid to a string
+    local result = ""
+    for y = 1, height do
+        for x = 1, width do
+            result = result .. grid[y][x]
+        end
+        if y < height then
+            result = result .. "\n"
+        end
+    end
+    
+    return result
+end
+
+-- Modify the return statement to include the new function
+return {
+    draw_pattern = draw_pattern,
+    create_pattern_string = create_pattern_string
+}

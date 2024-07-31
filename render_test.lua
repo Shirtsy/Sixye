@@ -1,0 +1,10 @@
+local hex_render = require("hex_utils.hex_render")
+
+term.clear()
+print(hex_render.create_pattern_string('NORTH_EAST', 'qeqwqwqwqwqeqaeqeaqeqaeqaqded', 20, 14, "#", "\81"))
+-- hex_render.draw_pattern('NORTH_EAST', 'qeqwqwqwqwqeqaeqeaqeqaeqaqded', 20, 1, 20, colors.yellow)
+-- hex_render.draw_pattern('SOUTH_EAST', 'deaqq', 41, 1, 20, colors.yellow)
+-- term.setCursorPos(1,1)
+-- read()
+-- term.clear()
+-- term.setCursorPos(1,1)
