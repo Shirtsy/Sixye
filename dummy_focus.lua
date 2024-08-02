@@ -3,6 +3,14 @@ local focus = {
         startDir = "NORTH_EAST",
         angles = "qqq"
     },
+    {
+        startDir = "NORTH_EAST",
+        angles = "qadaq"
+    },
+    {
+        startDir = "NORTH_EAST",
+        angles = "eee"
+    },
     true,
     15,
     {
@@ -11,8 +19,9 @@ local focus = {
     {
         x = 1,
         y = 2,
-        z = 3
+        z = 3,
     },
+    "Test String",
 }
 
 return focus
