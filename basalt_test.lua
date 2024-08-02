@@ -1,5 +1,5 @@
 local basalt = require("../basalt")
-local draw_pattern, create_pattern_string = require("hex_utils.hex_render")
+local draw_pattern, create_pattern_string = require("dependencies.hex_render")
 
 local main = basalt.createFrame():setTheme({FrameBG = colors.purple, FrameFG = colors.black})
 
