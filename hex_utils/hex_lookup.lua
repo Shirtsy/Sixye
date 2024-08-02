@@ -1,6 +1,4 @@
-local hexLookup = {
-    symbol_registry = {}
-}
+local hexLookup = {}
 
 function hexLookup.new(json_file_path)
     local hexLookup = {}
