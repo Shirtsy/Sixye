@@ -86,6 +86,25 @@ local function get_iota_color(iota)
     return iota_colors[get_iota_type(iota)]
 end
 
+local function create_iota_menu(frame, iota)
+    local right_menu = frame:addScrollableFrame():setSize(20, 17):setPosition(27, 2)
+
+    --local aLabel = right_menu:addLabel():setPosition(2, 2):setSize(18, 1)
+    --aLabel:setText("X: ")
+
+    --local function inputChange(self)
+    --    local checked = self:getValue()
+    --    basalt.debug("The value got changed into ", checked)
+    --end
+
+    --local anInput = right_menu:addInput():setPosition(2, 3):setSize(18, 1)
+    --anInput:setInputType("text")
+    --anInput:setDefaultText("Username")
+    --anInput:onChange(inputChange)
+
+    return right_menu
+end
+
 local main = basalt.createFrame()
 
 local right_menu = main:addScrollableFrame():setSize(20, 17):setPosition(27, 2)
@@ -100,19 +119,8 @@ end
 
 hex_list:onSelect(
     function(self, event, item)
-        local right_menu = main:addScrollableFrame():setSize(20, 17):setPosition(27, 2)
-
-        local aLabel = right_menu:addLabel():setPosition(2, 2):setSize(18, 1)
-        aLabel:setText("X: ")
-
-        local anInput = right_menu:addInput():setPosition(2, 3):setSize(18, 1)
-        anInput:setInputType("text")
-        anInput:setDefaultText("Username")
-        local function inputChange(self)
-            local checked = self:getValue()
-            basalt.debug("The value got changed into ", checked)
-        end
-        anInput:onChange(inputChange)
+        local hex_index = hex_list.getItemIndex()
+        local right_menu = create_iota_menu(main, focus[hex_index])
     end
 )
 
