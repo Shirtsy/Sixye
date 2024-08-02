@@ -61,8 +61,9 @@ local function get_iota_text(iota)
     local iota_type = get_iota_type(iota)
     if iota_type == "pattern" and #lookup:get_pattern_name(iota.angles) > 0 then
         return lookup:get_pattern_name(iota.angles)
+    else
+        return format_table[iota_type]()
     end
-    return format_table[iota_type]()
 end
 
 local function get_iota_color(iota)
