@@ -38,11 +38,10 @@ local function get_iota_type(iota)
     end
 end
 
-local function first_to_upper(str)
-    return (str:gsub("^%l", string.upper))
-end
-
 local function get_iota_text(iota)
+    local function first_to_upper(str)
+        return (str:gsub("^%l", string.upper))
+    end
     local format_table = {
         number = function() return tostring(iota) end,
         boolean = function() return first_to_upper(tostring(iota)) end,
