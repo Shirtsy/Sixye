@@ -40,4 +40,3 @@ luac.out
 *.hex
 
 .vscode/settings.json
-/dependencies

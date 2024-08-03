@@ -1,4 +1,4 @@
-local basalt = require("dependencies.basalt")
+local basalt = require("../basalt")
 local get_point_canvas = require("dependencies.hex_render")
 local hexLookup = require("dependencies.hex_lookup")
 
@@ -86,11 +86,12 @@ local function get_iota_color(iota)
     return iota_colors[get_iota_type(iota)]
 end
 
-local function create_iota_menu(frame, iota)
-    local right_menu = frame:addScrollableFrame():setSize(20, 17):setPosition(27, 2)
+local main = basalt.createFrame()
 
-    --local aLabel = right_menu:addLabel():setPosition(2, 2):setSize(18, 1)
-    --aLabel:setText("X: ")
+local function create_iota_menu(iota)
+    local right_menu = main:addScrollableFrame():setSize(20, 17):setPosition(27, 2)
+
+    
 
     --local function inputChange(self)
     --    local checked = self:getValue()
@@ -101,11 +102,7 @@ local function create_iota_menu(frame, iota)
     --anInput:setInputType("text")
     --anInput:setDefaultText("Username")
     --anInput:onChange(inputChange)
-
-    return right_menu
 end
-
-local main = basalt.createFrame()
 
 local right_menu = main:addScrollableFrame():setSize(20, 17):setPosition(27, 2)
 
@@ -120,9 +117,10 @@ end
 hex_list:onSelect(
     function(self, event, item)
         local hex_index = hex_list.getItemIndex()
-        local right_menu = create_iota_menu(main, focus[hex_index])
+        local right_menu = main:addScrollableFrame():setSize(20, 17):setPosition(27, 2)
+            local aLabel = right_menu:addLabel():setPosition(2, 2):setSize(18, 1)
+            aLabel:setText("X: ")
     end
 )
-
 
 basalt.autoUpdate()
