@@ -88,7 +88,7 @@ end
 
 local main = basalt.createFrame()
 
-local function create_iota_menu(iota)
+local function create_iota_menu(self, iota)
     local right_menu = main:addScrollableFrame():setSize(20, 17):setPosition(27, 2)
 
     
@@ -104,23 +104,33 @@ local function create_iota_menu(iota)
     --anInput:onChange(inputChange)
 end
 
-local right_menu = main:addScrollableFrame():setSize(20, 17):setPosition(27, 2)
+local right_menu = main:addScrollableFrame()
+    :setSize(20, 17)
+    :setPosition(27, 2)
 
-    local aLabel = right_menu:addLabel():setPosition(2, 2):setSize(18, 1)
-    aLabel:setText("Select an Iota")
+    local aLabel = right_menu:addLabel()
+        :setPosition(2, 2)
+        :setSize(18, 1)
+        :setText("Select an Iota")
 
-local hex_list = main:addList():setSize(24, 17):setPosition(2, 2)
+local hex_list = main:addList()
+    :setSize(24, 17)
+    :setPosition(2, 2)
+    :onSelect(
+        function(self, event, item)
+            local hex_index = self:getItemIndex()
+            right_menu = main:addScrollableFrame()
+                :setSize(20, 17)
+                :setPosition(27, 2)
+                aLabel = right_menu:addLabel()
+                    :setPosition(2, 2)
+                    :setSize(18, 1)
+                    :setText("X: ")
+            basalt.debug("The value got changed to " .. hex_index)
+        end
+    )
 for i = 1, #focus do
     hex_list:addItem(tostring(i) .. " " .. get_iota_text(focus[i]), colors.grey, get_iota_color(focus[i]))
 end
-
-hex_list:onSelect(
-    function(self, event, item)
-        local hex_index = hex_list.getItemIndex()
-        local right_menu = main:addScrollableFrame():setSize(20, 17):setPosition(27, 2)
-            local aLabel = right_menu:addLabel():setPosition(2, 2):setSize(18, 1)
-            aLabel:setText("X: ")
-    end
-)
 
 basalt.autoUpdate()
