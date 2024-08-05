@@ -237,22 +237,76 @@ local build_iota_menu = (function()
                     end
                 )
                 for _, v in pairs(start_directions) do
-                    if v ~= iota.StartDir then
+                    if v ~= iota.startDir then
                         dropdown:addItem(v, colors.black, colors.white)
                     end
                 end
         end,
         iota_type = function(frame, iota)
-
+            add_label(frame, 2, "Iota Type")
+            add_label(frame, 4, "Type:")
+            add_input(frame, 5)
+                :setInputType("text")
+                :setDefaultText(tostring(iota.iotaType))
+                :onChange(
+                    function(self)
+                        basalt.debug(self:getValue())
+                    end
+                )
         end,
         entity_type = function(frame, iota)
-
+            add_label(frame, 2, "Entity Type")
+            add_label(frame, 4, "Type:")
+            add_input(frame, 5)
+                :setInputType("text")
+                :setDefaultText(tostring(iota.entityType))
+                :onChange(
+                    function(self)
+                        basalt.debug(self:getValue())
+                    end
+                )
         end,
         gate = function(frame, iota)
-
+            add_label(frame, 2, "Gate")
+            add_label(frame, 4, "Gate UUID:")
+            add_input(frame, 5)
+                :setInputType("text")
+                :setDefaultText(tostring(iota.gate))
+                :onChange(
+                    function(self)
+                        basalt.debug(self:getValue())
+                    end
+                )
         end,
         mote = function(frame, iota)
-
+            add_label(frame, 2, "Mote")
+            add_label(frame, 4, "Mote UUID:")
+            add_input(frame, 5)
+                :setInputType("text")
+                :setDefaultText(tostring(iota.moteUuid))
+                :onChange(
+                    function(self)
+                        basalt.debug(self:getValue())
+                    end
+                )
+            add_label(frame, 7, "Item ID:")
+            add_input(frame, 8)
+                :setInputType("text")
+                :setDefaultText(tostring(iota.itemID))
+                :onChange(
+                    function(self)
+                        basalt.debug(self:getValue())
+                    end
+                )
+            add_label(frame, 10, "Nexus UUID:")
+            add_input(frame, 11)
+                :setInputType("text")
+                :setDefaultText(tostring(iota.nexusUuid))
+                :onChange(
+                    function(self)
+                        basalt.debug(self:getValue())
+                    end
+                )
         end,
         item_type = function(frame, iota)
 
