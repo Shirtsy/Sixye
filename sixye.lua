@@ -28,7 +28,7 @@ local function make_get_iota_type()
         item_type = "item_type",
         list = 1,
     }
-    local get_iota_type = function(iota)
+    return function(iota)
         local lua_type = type(iota)
         for k, v in pairs(iota_types) do
             if v == lua_type then
@@ -38,7 +38,6 @@ local function make_get_iota_type()
             end
         end
     end
-    return get_iota_type
 end
 local get_iota_type = make_get_iota_type()
 
@@ -62,7 +61,7 @@ local function make_get_iota_text()
         item_type = function(iota) return "Item Type:"..iota.itemType end,
         list = function(iota) return "List" end,
     }
-    local get_iota_text = function(iota)
+    return function(iota)
         local iota_type = get_iota_type(iota)
         if iota_type == "pattern" and #lookup:get_pattern_name(iota.angles) > 0 then
             return lookup:get_pattern_name(iota.angles)
@@ -70,7 +69,6 @@ local function make_get_iota_text()
             return format_table[iota_type](iota)
         end
     end
-    return get_iota_text
 end
 local get_iota_text = make_get_iota_text()
 
@@ -91,10 +89,9 @@ local function make_get_iota_color()
         item_type = colors.white,
         list = colors.orange,
     }
-    local get_iota_color = function(iota) 
+    return function(iota) 
         return iota_colors[get_iota_type(iota)]
     end
-    return get_iota_color
 end
 local get_iota_color = make_get_iota_color()
 
