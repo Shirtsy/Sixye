@@ -11,7 +11,7 @@ end
 local lookup = hexLookup.new(get_running_path() .. "dependencies/symbol-registry.json")
 local focus = require("dummy_focus")
 
-local function get_iota_type(iota)
+local function make_get_iota_type()
     local iota_types = {
         number = "number",
         boolean = "boolean",
@@ -28,45 +28,53 @@ local function get_iota_type(iota)
         item_type = "item_type",
         list = 1,
     }
-    local lua_type = type(iota)
-    for k, v in pairs(iota_types) do
-        if v == lua_type then
-            return k
-        elseif type(iota) == "table" and iota[v] then
-            return k
+    local get_iota_type = function(iota)
+        local lua_type = type(iota)
+        for k, v in pairs(iota_types) do
+            if v == lua_type then
+                return k
+            elseif type(iota) == "table" and iota[v] then
+                return k
+            end
         end
     end
+    return get_iota_type
 end
+local get_iota_type = make_get_iota_type()
 
-local function get_iota_text(iota)
+local function make_get_iota_text()
     local function first_to_upper(str)
         return (str:gsub("^%l", string.upper))
     end
     local format_table = {
-        number = function() return tostring(iota) end,
-        boolean = function() return first_to_upper(tostring(iota)) end,
-        string = function() return '"'..iota..'"' end,
-        null = function() return "Null" end,
-        garbage = function() return "Garbage" end,
-        vector = function() return "("..iota.x..","..iota.y..","..iota.z..")" end,
-        entity = function() return "Entity" end,
-        pattern = function() return iota.angles.." | "..iota.startDir end,
-        iota_type = function() return "Iota Type:"..iota.iotaType end,
-        entity_type = function() return "Entity Type:"..iota.entityType end,
-        gate = function() return "Gate" end,
-        mote = function() return "Mote" end,
-        item_type = function() return "Item Type:"..iota.itemType end,
-        list = function() return "List" end,
+        number = function(iota) return tostring(iota) end,
+        boolean = function(iota) return first_to_upper(tostring(iota)) end,
+        string = function(iota) return '"'..iota..'"' end,
+        null = function(iota) return "Null" end,
+        garbage = function(iota) return "Garbage" end,
+        vector = function(iota) return "("..iota.x..","..iota.y..","..iota.z..")" end,
+        entity = function(iota) return "Entity" end,
+        pattern = function(iota) return iota.angles.." | "..iota.startDir end,
+        iota_type = function(iota) return "Iota Type:"..iota.iotaType end,
+        entity_type = function(iota) return "Entity Type:"..iota.entityType end,
+        gate = function(iota) return "Gate" end,
+        mote = function(iota) return "Mote" end,
+        item_type = function(iota) return "Item Type:"..iota.itemType end,
+        list = function(iota) return "List" end,
     }
-    local iota_type = get_iota_type(iota)
-    if iota_type == "pattern" and #lookup:get_pattern_name(iota.angles) > 0 then
-        return lookup:get_pattern_name(iota.angles)
-    else
-        return format_table[iota_type]()
+    local get_iota_text = function(iota)
+        local iota_type = get_iota_type(iota)
+        if iota_type == "pattern" and #lookup:get_pattern_name(iota.angles) > 0 then
+            return lookup:get_pattern_name(iota.angles)
+        else
+            return format_table[iota_type](iota)
+        end
     end
+    return get_iota_text
 end
+local get_iota_text = make_get_iota_text()
 
-local function get_iota_color(iota)
+local function make_get_iota_color()
     local iota_colors = {
         number = colors.yellow,
         boolean = colors.green,
@@ -83,8 +91,12 @@ local function get_iota_color(iota)
         item_type = colors.white,
         list = colors.orange,
     }
-    return iota_colors[get_iota_type(iota)]
+    local get_iota_color = function(iota) 
+        return iota_colors[get_iota_type(iota)]
+    end
+    return get_iota_color
 end
+local get_iota_color = make_get_iota_color()
 
 local main = basalt.createFrame()
 
