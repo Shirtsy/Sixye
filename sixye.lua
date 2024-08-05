@@ -185,9 +185,35 @@ local build_iota_menu = (function()
                 )
         end,
         entity = function(frame, iota)
-
+            add_label(frame, 2, "Entity")
+            add_label(frame, 4, "UUID:")
+            add_input(frame, 5)
+                :setInputType("text")
+                :setDefaultText(tostring(iota.uuid))
+                :onChange(
+                    function(self)
+                        basalt.debug(self:getValue())
+                    end
+                )
+            add_label(frame, 7, "Name:")
+            add_input(frame, 8)
+                :setInputType("text")
+                :setDefaultText(tostring(iota.name))
+                :onChange(
+                    function(self)
+                        basalt.debug(self:getValue())
+                    end
+                )
         end,
         pattern = function(frame, iota)
+            local start_directions = {
+                "EAST",
+                "NORTH_EAST",
+                "NORTH_WEST",
+                "WEST",
+                "SOUTH_WEST",
+                "SOUTH_EAST"
+            }
             add_label(frame, 2, "Pattern")
             add_label(frame, 4, "Angles:")
             add_input(frame, 5)
@@ -198,6 +224,23 @@ local build_iota_menu = (function()
                         basalt.debug(self:getValue())
                     end
                 )
+            add_label(frame, 7, "Direction:")
+            local dropdown = frame:addDropdown()
+                :setPosition(2, 8)
+                :setSize(18, 1)
+                :setForeground(colors.white)
+                :setBackground(colors.black)
+                :addItem(iota.startDir, colors.black, colors.white)
+                :onChange(
+                    function(self, event, item)
+                        basalt.debug(item.text)
+                    end
+                )
+                for _, v in pairs(start_directions) do
+                    if v ~= iota.StartDir then
+                        dropdown:addItem(v, colors.black, colors.white)
+                    end
+                end
         end,
         iota_type = function(frame, iota)
 
@@ -298,6 +341,6 @@ local function draw_splash_screen(animation_duration, delay_duration)
     sleep(delay_duration)
 end
 
-draw_splash_screen(0.2, 0.1)
+--draw_splash_screen(0.2, 0.1)
 
 basalt.autoUpdate()

@@ -1,6 +1,6 @@
 local focus = {
     {
-        startDir = "NORTH_EAST",
+        startDir = "EAST",
         angles = "qqq"
     },
     {
