@@ -116,8 +116,7 @@ end
 
 local right_menu = main:addScrollableFrame()
     :setSize(20, 17)
-    :setPosition(27, 2)
-
+    :setPosition(31, 2)
     local aLabel = right_menu:addLabel()
         :setPosition(2, 2)
         :setSize(18, 1)
@@ -131,7 +130,7 @@ local hex_list = main:addList()
             local hex_index = self:getItemIndex()
             right_menu = main:addScrollableFrame()
                 :setSize(20, 17)
-                :setPosition(27, 2)
+                :setPosition(31, 2)
                 aLabel = right_menu:addLabel()
                     :setPosition(2, 2)
                     :setSize(18, 1)
@@ -140,7 +139,8 @@ local hex_list = main:addList()
         end
     )
 for i = 1, #focus do
-    hex_list:addItem(tostring(i) .. " " .. get_iota_text(focus[i]), colors.grey, get_iota_color(focus[i]))
+    local padded_num = string.format("%" .. #tostring(#focus) .. "d", i)
+    hex_list:addItem(padded_num .. " " .. get_iota_text(focus[i]), colors.grey, get_iota_color(focus[i]))
 end
 
 local function draw_splash_screen(animation_duration, delay_duration)
