@@ -1,4 +1,4 @@
-local basalt = require("../basalt")
+local basalt = require("dependencies.basalt")
 local get_point_canvas = require("dependencies.hex_render")
 local hexLookup = require("dependencies.hex_lookup")
 
@@ -11,7 +11,7 @@ end
 local lookup = hexLookup.new(get_running_path() .. "dependencies/symbol-registry.json")
 local focus = require("dummy_focus")
 
-local function make_get_iota_type()
+local get_iota_type = (function()
     local iota_types = {
         number = "number",
         boolean = "boolean",
@@ -38,10 +38,9 @@ local function make_get_iota_type()
             end
         end
     end
-end
-local get_iota_type = make_get_iota_type()
+end)()
 
-local function make_get_iota_text()
+local get_iota_text = (function()
     local function first_to_upper(str)
         return (str:gsub("^%l", string.upper))
     end
@@ -69,10 +68,9 @@ local function make_get_iota_text()
             return format_table[iota_type](iota)
         end
     end
-end
-local get_iota_text = make_get_iota_text()
+end)()
 
-local function make_get_iota_color()
+local get_iota_color = (function()
     local iota_colors = {
         number = colors.yellow,
         boolean = colors.green,
@@ -92,10 +90,12 @@ local function make_get_iota_color()
     return function(iota) 
         return iota_colors[get_iota_type(iota)]
     end
-end
-local get_iota_color = make_get_iota_color()
+end)()
 
 local main = basalt.createFrame()
+if not main then
+    error("Main is nil")
+end
 
 local function create_iota_menu(self, iota)
     local right_menu = main:addScrollableFrame():setSize(20, 17):setPosition(27, 2)
