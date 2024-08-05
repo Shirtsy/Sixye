@@ -1,6 +1,7 @@
 local basalt = require("dependencies.basalt")
 local get_point_canvas = require("dependencies.hex_render")
 local hexLookup = require("dependencies.hex_lookup")
+local SmolCanvas = require("dependencies.smol_canvas")
 
 local function get_running_path()
     local runningProgram = shell.getRunningProgram()
@@ -141,5 +142,46 @@ local hex_list = main:addList()
 for i = 1, #focus do
     hex_list:addItem(tostring(i) .. " " .. get_iota_text(focus[i]), colors.grey, get_iota_color(focus[i]))
 end
+
+local function draw_splash_screen(animation_duration, delay_duration)
+    local function generate_hexagon_points(size)
+        local points = {}
+        local angle = math.pi / 3  -- 60 degrees in radians
+        for i = 0, 5 do
+            local x = size * math.cos(i * angle)
+            local y = size * math.sin(i * angle)
+            -- Rotate by 30 degrees (pi/6 radians) to have flat sides on top and bottom
+            local rotatedX = x * math.cos(math.pi/6) - y * math.sin(math.pi/6)
+            local rotatedY = x * math.sin(math.pi/6) + y * math.cos(math.pi/6)
+            table.insert(points, {x = rotatedX, y = rotatedY})
+        end
+        return points
+    end
+    local splash_screen = SmolCanvas.new(51,19)
+    splash_screen:set_background_color(colors.black)
+    splash_screen:set_foreground_color(colors.purple)
+    --splash_screen:draw_pixel(51, 28)
+    local coords = generate_hexagon_points(20)
+    for i = 1, 10 do
+        for _,v in ipairs(coords) do
+            local x_size = 13
+            local y_size = 8
+            local x_pos = v.x-x_size/2 + 51
+            local y_pos = v.y-y_size/2 + 27
+            local px_size = 3
+            local py_size = 6
+            local px_pos = v.x-px_size/2 + 51
+            local py_pos = v.y-py_size/2 + 27
+            splash_screen:draw_ellipse(x_pos, y_pos , x_pos + x_size, y_pos+y_size)
+            splash_screen:erase_ellipse(x_pos, y_pos - i, x_pos + x_size, y_pos + y_size - i)
+            splash_screen:erase_ellipse(px_pos, py_pos, px_pos + px_size, py_pos + py_size)
+        end
+        sleep(animation_duration/10)
+        splash_screen:render_canvas(1,1)
+    end
+    sleep(delay_duration)
+end
+
+draw_splash_screen(0.2, 0.1)
 
 basalt.autoUpdate()
