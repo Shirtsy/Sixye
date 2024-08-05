@@ -159,7 +159,7 @@ local function draw_splash_screen(animation_duration, delay_duration)
     end
     local splash_screen = SmolCanvas.new(51,19)
     splash_screen:set_background_color(colors.black)
-    splash_screen:set_foreground_color(colors.purple)
+    splash_screen:set_foreground_color(colors.gray)
     --splash_screen:draw_pixel(51, 28)
     local coords = generate_hexagon_points(20)
     for i = 1, 10 do
@@ -169,7 +169,7 @@ local function draw_splash_screen(animation_duration, delay_duration)
             local x_pos = v.x-x_size/2 + 51
             local y_pos = v.y-y_size/2 + 27
             local px_size = 3
-            local py_size = 6
+            local py_size = 5
             local px_pos = v.x-px_size/2 + 51
             local py_pos = v.y-py_size/2 + 27
             splash_screen:draw_ellipse(x_pos, y_pos , x_pos + x_size, y_pos+y_size)
