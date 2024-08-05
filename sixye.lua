@@ -12,6 +12,10 @@ end
 local lookup = hexLookup.new(get_running_path() .. "dependencies/symbol-registry.json")
 local focus = require("dummy_focus")
 
+local function first_to_upper(str)
+    return (str:gsub("^%l", string.upper))
+end
+
 local get_iota_type = (function()
     local iota_types = {
         number = "number",
@@ -42,9 +46,6 @@ local get_iota_type = (function()
 end)()
 
 local get_iota_text = (function()
-    local function first_to_upper(str)
-        return (str:gsub("^%l", string.upper))
-    end
     local format_table = {
         number = function(iota) return tostring(iota) end,
         boolean = function(iota) return first_to_upper(tostring(iota)) end,
@@ -93,34 +94,152 @@ local get_iota_color = (function()
     end
 end)()
 
+local build_iota_menu = (function()
+    local function add_label(frame, y_pos, text)
+        local label = frame:addLabel()
+            :setPosition(2, y_pos)
+            :setSize(18, 1)
+            :setForeground(colors.white)
+            :setText(text)
+        return label
+    end
+    local function add_input(frame, y_pos)
+        local input = frame:addInput()
+            :setPosition(2, y_pos)
+            :setSize(18, 1)
+            :setForeground(colors.white)
+        return input
+    end
+    local menu_table = {
+        number = function(frame, iota)
+            add_label(frame, 2, "Number:")
+            add_input(frame, 3)
+                :setInputType("number")
+                :setDefaultText(tostring(iota))
+                :onChange(
+                    function(self)
+                        basalt.debug(self:getValue())
+                    end
+                )
+        end,
+        boolean = function(frame, iota)
+            add_label(frame, 2, "Boolean:")
+            frame:addDropdown()
+                :setPosition(2, 3)
+                :setSize(18, 1)
+                :setForeground(colors.white)
+                :setBackground(colors.black)
+                :addItem(first_to_upper(tostring(iota)), colors.black, colors.white)
+                :addItem(first_to_upper(tostring(not iota)), colors.black, colors.white)
+                :onChange(
+                    function(self, event, item)
+                        basalt.debug(item.text)
+                    end
+                )
+        end,
+        string = function(frame, iota)
+            add_label(frame, 2, "String:")
+            add_input(frame, 3)
+                :setInputType("text")
+                :setDefaultText(tostring(iota))
+                :onChange(
+                    function(self)
+                        basalt.debug(self:getValue())
+                    end
+                )
+        end,
+        null = function(frame, iota)
+            add_label(frame, 2, "Null")
+        end,
+        garbage = function(frame, iota)
+            add_label(frame, 2, "Garbage")
+        end,
+        vector = function(frame, iota)
+            add_label(frame, 2, "Vector")
+            add_label(frame, 4, "X:")
+            add_input(frame, 5)
+                :setInputType("number")
+                :setDefaultText(tostring(iota.x))
+                :onChange(
+                    function(self)
+                        basalt.debug(self:getValue())
+                    end
+                )
+            add_label(frame, 7, "Y:")
+            add_input(frame, 8)
+                :setInputType("number")
+                :setDefaultText(tostring(iota.y))
+                :onChange(
+                    function(self)
+                        basalt.debug(self:getValue())
+                    end
+                )
+            add_label(frame, 10, "Z:")
+            add_input(frame, 11)
+                :setInputType("number")
+                :setDefaultText(tostring(iota.z))
+                :onChange(
+                    function(self)
+                        basalt.debug(self:getValue())
+                    end
+                )
+        end,
+        entity = function(frame, iota)
+
+        end,
+        pattern = function(frame, iota)
+            add_label(frame, 2, "Pattern")
+            add_label(frame, 4, "Angles:")
+            add_input(frame, 5)
+                :setInputType("text")
+                :setDefaultText(tostring(iota.angles))
+                :onChange(
+                    function(self)
+                        basalt.debug(self:getValue())
+                    end
+                )
+        end,
+        iota_type = function(frame, iota)
+
+        end,
+        entity_type = function(frame, iota)
+
+        end,
+        gate = function(frame, iota)
+
+        end,
+        mote = function(frame, iota)
+
+        end,
+        item_type = function(frame, iota)
+
+        end,
+        list = function(frame, iota)
+
+        end,
+    }
+    return function(frame, iota)
+        local iota_type = get_iota_type(iota)
+        menu_table[iota_type](frame, iota)
+    end
+end)()
+
 local main = basalt.createFrame()
 if not main then
     error("Main is nil")
 end
 
-local function create_iota_menu(self, iota)
-    local right_menu = main:addScrollableFrame():setSize(20, 17):setPosition(27, 2)
-
-    
-
-    --local function inputChange(self)
-    --    local checked = self:getValue()
-    --    basalt.debug("The value got changed into ", checked)
-    --end
-
-    --local anInput = right_menu:addInput():setPosition(2, 3):setSize(18, 1)
-    --anInput:setInputType("text")
-    --anInput:setDefaultText("Username")
-    --anInput:onChange(inputChange)
+local build_right_menu = function()
+    main:addScrollableFrame()
+        :setSize(20, 17)
+        :setPosition(31, 2)
+        :setForeground(colors.white)
+        :addLabel()
+            :setPosition(2, 2)
+            :setSize(18, 1)
+            :setText("Select an Iota")
 end
-
-local right_menu = main:addScrollableFrame()
-    :setSize(20, 17)
-    :setPosition(31, 2)
-    local aLabel = right_menu:addLabel()
-        :setPosition(2, 2)
-        :setSize(18, 1)
-        :setText("Select an Iota")
+local right_menu = build_right_menu()
 
 local hex_list = main:addList()
     :setSize(24, 17)
@@ -131,10 +250,7 @@ local hex_list = main:addList()
             right_menu = main:addScrollableFrame()
                 :setSize(20, 17)
                 :setPosition(31, 2)
-                aLabel = right_menu:addLabel()
-                    :setPosition(2, 2)
-                    :setSize(18, 1)
-                    :setText("X: ")
+                build_iota_menu(right_menu, focus[hex_index])
             basalt.debug("The value got changed to " .. hex_index)
         end
     )
