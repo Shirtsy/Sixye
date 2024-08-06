@@ -4,9 +4,6 @@ local get_point_canvas = require("dependencies.hex_render")
 local SmolCanvas = require("dependencies.smol_canvas")
 local t = require("iota_templating")
 
-
-local focus = require("dummy_focus")
-
 local function swap(Table, Pos1, Pos2)
     Table[Pos1], Table[Pos2] = Table[Pos2], Table[Pos1]
     return Table
@@ -24,7 +21,7 @@ local function build_right_menu(frame)
     return right_menu
 end
 
-local function build_hex_list(frame, focus, list)
+local function build_hex_list(frame, right_menu, focus, list)
     local selection = 1
     local offset = 0
     if list then
@@ -40,10 +37,10 @@ local function build_hex_list(frame, focus, list)
         :onSelect(
             function(self, event, item)
                 local hex_index = self:getItemIndex()
-                local right_menu = frame:addScrollableFrame()
+                right_menu = frame:addScrollableFrame()
                     :setSize(20, 17)
                     :setPosition(31, 2)
-                local callback = function() return build_hex_list(frame, focus, self) end
+                local callback = function() return build_hex_list(frame, right_menu, focus, self) end
                 t.build_iota_menu(right_menu, focus, hex_index, callback)
                 --basalt.debug("Selected iota #" .. hex_index)
             end
@@ -59,11 +56,13 @@ local function build_hex_list(frame, focus, list)
     return hex_list
 end
 
+local focus = require("dummy_focus")
+
 local main = basalt.createFrame()
 
 local right_menu = build_right_menu(main)
 
-local hex_list = build_hex_list(main, focus)
+local hex_list = build_hex_list(main, right_menu, focus)
 
 local up_button = main:addButton()
     :setSize(3,3)
@@ -71,14 +70,17 @@ local up_button = main:addButton()
     :setHorizontalAlign("center")
     :setVerticalAlign("center")
     :setText("\24")
+    :setForeground(colors.black)
+    :setBackground(colors.white)
+    :setBorder(colors.black)
     :onClick(
         function(self,event,button,x,y)
-            if(event=="mouse_click")and(button==1)then
+            if(event=="mouse_click")then
                 --basalt.debug("Left mousebutton got clicked!")
                 local index = hex_list:getItemIndex()
                 if index > 1 then
                     swap(focus, index, index-1)
-                    build_hex_list(main, focus, hex_list)
+                    build_hex_list(main, right_menu, focus, hex_list)
                     hex_list:selectItem(index-1)
                 end
             end
@@ -86,23 +88,26 @@ local up_button = main:addButton()
     )
 
 local down_button = main:addButton()
-:setSize(3,3)
-:setPosition(27,6)
-:setHorizontalAlign("center")
-:setVerticalAlign("center")
-:setText("\25")
-:onClick(
-    function(self,event,button,x,y)
-        if(event=="mouse_click")and(button==1)then
-            --basalt.debug("Left mousebutton got clicked!")
-            local index = hex_list:getItemIndex()
-            if index < #focus then
-                swap(focus, index, index+1)
-                build_hex_list(main, focus, hex_list)
-                hex_list:selectItem(index+1)
+    :setSize(3,3)
+    :setPosition(27,6)
+    :setHorizontalAlign("center")
+    :setVerticalAlign("center")
+    :setText("\25")
+    :setForeground(colors.black)
+    :setBackground(colors.white)
+    :setBorder(colors.black)
+    :onClick(
+        function(self,event,button,x,y)
+            if(event=="mouse_click")then
+                --basalt.debug("Left mousebutton got clicked!")
+                local index = hex_list:getItemIndex()
+                if index < #focus then
+                    swap(focus, index, index+1)
+                    build_hex_list(main, right_menu, focus, hex_list)
+                    hex_list:selectItem(index+1)
+                end
             end
         end
-    end
 )
 
 local function draw_splash_screen(animation_duration, delay_duration)
