@@ -7,6 +7,11 @@ local t = require("iota_templating")
 
 local focus = require("dummy_focus")
 
+local function swap(Table, Pos1, Pos2)
+    Table[Pos1], Table[Pos2] = Table[Pos2], Table[Pos1]
+    return Table
+end
+
 local function build_right_menu(frame)
     local right_menu = frame:addScrollableFrame()
         :setSize(20, 17)
@@ -25,22 +30,24 @@ local function build_hex_list(frame, focus, list)
     if list then
         selection = list:getItemIndex()
         offset = list:getOffset()
+    else
+        list = frame:addList()
     end
-
-    local hex_list = frame:addList()
-    :setSize(24, 17)
-    :setPosition(2, 2)
-    :onSelect(
-        function(self, event, item)
-            local hex_index = self:getItemIndex()
-            local right_menu = frame:addScrollableFrame()
-                :setSize(20, 17)
-                :setPosition(31, 2)
-            local callback = function() return build_hex_list(frame, focus, self) end
-            t.build_iota_menu(right_menu, focus, hex_index, callback)
-            --basalt.debug("Selected iota #" .. hex_index)
-        end
-    )
+    local hex_list = list
+        :clear()
+        :setSize(24, 17)
+        :setPosition(2, 2)
+        :onSelect(
+            function(self, event, item)
+                local hex_index = self:getItemIndex()
+                local right_menu = frame:addScrollableFrame()
+                    :setSize(20, 17)
+                    :setPosition(31, 2)
+                local callback = function() return build_hex_list(frame, focus, self) end
+                t.build_iota_menu(right_menu, focus, hex_index, callback)
+                --basalt.debug("Selected iota #" .. hex_index)
+            end
+        )
     for i = 1, #focus do
         local padded_num = string.format("%" .. #tostring(#focus) .. "d", i)
         hex_list:addItem(padded_num .. " " .. t.get_iota_text(focus[i]), colors.grey, t.get_iota_color(focus[i]))
@@ -48,6 +55,7 @@ local function build_hex_list(frame, focus, list)
 
     hex_list:selectItem(selection)
     hex_list:setOffset(offset)
+
     return hex_list
 end
 
@@ -56,6 +64,46 @@ local main = basalt.createFrame()
 local right_menu = build_right_menu(main)
 
 local hex_list = build_hex_list(main, focus)
+
+local up_button = main:addButton()
+    :setSize(3,3)
+    :setPosition(27,2)
+    :setHorizontalAlign("center")
+    :setVerticalAlign("center")
+    :setText("\24")
+    :onClick(
+        function(self,event,button,x,y)
+            if(event=="mouse_click")and(button==1)then
+                --basalt.debug("Left mousebutton got clicked!")
+                local index = hex_list:getItemIndex()
+                if index > 1 then
+                    swap(focus, index, index-1)
+                    build_hex_list(main, focus, hex_list)
+                    hex_list:selectItem(index-1)
+                end
+            end
+        end
+    )
+
+local down_button = main:addButton()
+:setSize(3,3)
+:setPosition(27,6)
+:setHorizontalAlign("center")
+:setVerticalAlign("center")
+:setText("\25")
+:onClick(
+    function(self,event,button,x,y)
+        if(event=="mouse_click")and(button==1)then
+            --basalt.debug("Left mousebutton got clicked!")
+            local index = hex_list:getItemIndex()
+            if index < #focus then
+                swap(focus, index, index+1)
+                build_hex_list(main, focus, hex_list)
+                hex_list:selectItem(index+1)
+            end
+        end
+    end
+)
 
 local function draw_splash_screen(animation_duration, delay_duration)
     local function generate_hexagon_points(size)
