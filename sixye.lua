@@ -19,7 +19,7 @@ local function build_right_menu(frame)
     return right_menu
 end
 
-local function build_hex_list(frame, list)
+local function build_hex_list(frame, focus, list)
     local selection = 1
     local offset = 0
     if list then
@@ -36,7 +36,7 @@ local function build_hex_list(frame, list)
             local right_menu = frame:addScrollableFrame()
                 :setSize(20, 17)
                 :setPosition(31, 2)
-            local callback = function() return build_hex_list(frame, self) end
+            local callback = function() return build_hex_list(frame, focus, self) end
             t.build_iota_menu(right_menu, focus, hex_index, callback)
             --basalt.debug("Selected iota #" .. hex_index)
         end
@@ -55,7 +55,7 @@ local main = basalt.createFrame()
 
 local right_menu = build_right_menu(main)
 
-local hex_list = build_hex_list(main)
+local hex_list = build_hex_list(main, focus)
 
 local function draw_splash_screen(animation_duration, delay_duration)
     local function generate_hexagon_points(size)
