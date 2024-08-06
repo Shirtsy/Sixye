@@ -112,9 +112,14 @@ local menu_table = {
             :setDefaultText(tostring(iota))
             :onChange(
                 function(self)
-                    basalt.debug(self:getValue())
+                    --basalt.debug(self:getValue())
+                    if #tostring(self:getValue()) > 0 then
+                        focus[index] = self:getValue()
+                    else
+                        focus[index] = 0
+                    end
+                    callback()
                 end
-
             )
     end,
     boolean = function(frame, focus, index, callback)
@@ -129,7 +134,7 @@ local menu_table = {
             :addItem(first_to_upper(tostring(not iota)), colors.black, colors.white)
             :onChange(
                 function(self, event, item)
-                    basalt.debug(item.text)
+                    --basalt.debug(item.text)
                     if item.text == "True" then
                         focus[index] = true
                     else
@@ -147,7 +152,9 @@ local menu_table = {
             :setDefaultText(tostring(iota))
             :onChange(
                 function(self)
-                    basalt.debug(self:getValue())
+                    --basalt.debug(self:getValue())
+                    focus[index] = self:getValue()
+                    callback()
                 end
             )
     end,
@@ -168,7 +175,13 @@ local menu_table = {
             :setDefaultText(tostring(iota.x))
             :onChange(
                 function(self)
-                    basalt.debug(self:getValue())
+                    --basalt.debug(self:getValue())
+                    if #tostring(self:getValue()) > 0 then
+                        focus[index].x = self:getValue()
+                    else
+                        focus[index].x = 0
+                    end
+                    callback()
                 end
             )
         add_label(frame, 7, "Y:")
@@ -177,7 +190,13 @@ local menu_table = {
             :setDefaultText(tostring(iota.y))
             :onChange(
                 function(self)
-                    basalt.debug(self:getValue())
+                    --basalt.debug(self:getValue())
+                    if #tostring(self:getValue()) > 0 then
+                        focus[index].y = self:getValue()
+                    else
+                        focus[index].y = 0
+                    end
+                    callback()
                 end
             )
         add_label(frame, 10, "Z:")
@@ -186,7 +205,13 @@ local menu_table = {
             :setDefaultText(tostring(iota.z))
             :onChange(
                 function(self)
-                    basalt.debug(self:getValue())
+                    --basalt.debug(self:getValue())
+                    if #tostring(self:getValue()) > 0 then
+                        focus[index].z = self:getValue()
+                    else
+                        focus[index].z = 0
+                    end
+                    callback()
                 end
             )
     end,
@@ -199,7 +224,9 @@ local menu_table = {
             :setDefaultText(tostring(iota.uuid))
             :onChange(
                 function(self)
-                    basalt.debug(self:getValue())
+                    --basalt.debug(self:getValue())
+                    focus[index].uuid = self:getValue()
+                    callback()
                 end
             )
         add_label(frame, 7, "Name:")
@@ -208,7 +235,9 @@ local menu_table = {
             :setDefaultText(tostring(iota.name))
             :onChange(
                 function(self)
-                    basalt.debug(self:getValue())
+                    --basalt.debug(self:getValue())
+                    focus[index].name = self:getValue()
+                    callback()
                 end
             )
     end,
@@ -229,7 +258,9 @@ local menu_table = {
             :setDefaultText(tostring(iota.angles))
             :onChange(
                 function(self)
-                    basalt.debug(self:getValue())
+                    --basalt.debug(self:getValue())
+                    focus[index].angles = self:getValue()
+                    callback()
                 end
             )
         add_label(frame, 7, "Direction:")
@@ -241,7 +272,9 @@ local menu_table = {
             :addItem(iota.startDir, colors.black, colors.white)
             :onChange(
                 function(self, event, item)
-                    basalt.debug(item.text)
+                    --basalt.debug(item.text)
+                    focus[index].startDir = item.text
+                    callback()
                 end
             )
             for _, v in pairs(start_directions) do
@@ -259,7 +292,9 @@ local menu_table = {
             :setDefaultText(tostring(iota.iotaType))
             :onChange(
                 function(self)
-                    basalt.debug(self:getValue())
+                    --basalt.debug(self:getValue())
+                    focus[index].iotaType = self:getValue()
+                    callback()
                 end
             )
     end,
@@ -272,7 +307,9 @@ local menu_table = {
             :setDefaultText(tostring(iota.entityType))
             :onChange(
                 function(self)
-                    basalt.debug(self:getValue())
+                    --basalt.debug(self:getValue())
+                    focus[index].entityType = self:getValue()
+                    callback()
                 end
             )
     end,
@@ -285,7 +322,9 @@ local menu_table = {
             :setDefaultText(tostring(iota.gate))
             :onChange(
                 function(self)
-                    basalt.debug(self:getValue())
+                    --basalt.debug(self:getValue())
+                    focus[index].gate = self:getValue()
+                    callback()
                 end
             )
     end,
@@ -298,7 +337,9 @@ local menu_table = {
             :setDefaultText(tostring(iota.moteUuid))
             :onChange(
                 function(self)
-                    basalt.debug(self:getValue())
+                    --basalt.debug(self:getValue())
+                    focus[index].moteUuid = self:getValue()
+                    callback()
                 end
             )
         add_label(frame, 7, "Item ID:")
@@ -307,7 +348,9 @@ local menu_table = {
             :setDefaultText(tostring(iota.itemID))
             :onChange(
                 function(self)
-                    basalt.debug(self:getValue())
+                    --basalt.debug(self:getValue())
+                    focus[index].itemID = self:getValue()
+                    callback()
                 end
             )
         add_label(frame, 10, "Nexus UUID:")
@@ -316,7 +359,9 @@ local menu_table = {
             :setDefaultText(tostring(iota.nexusUuid))
             :onChange(
                 function(self)
-                    basalt.debug(self:getValue())
+                    --basalt.debug(self:getValue())
+                    focus[index].nexusUuid = self:getValue()
+                    callback()
                 end
             )
     end,
@@ -329,10 +374,12 @@ local menu_table = {
             :setDefaultText(tostring(iota.itemType))
             :onChange(
                 function(self)
-                    basalt.debug(self:getValue())
+                    --basalt.debug(self:getValue())
+                    focus[index].itemType = self:getValue()
+                    callback()
                 end
             )
-        add_label(frame, 7, "Is item?")
+        add_label(frame, 7, "Is item:")
         frame:addDropdown()
             :setPosition(2, 8)
             :setSize(18, 1)
@@ -343,6 +390,12 @@ local menu_table = {
             :onChange(
                 function(self, event, item)
                     basalt.debug(item.text)
+                    if item.text == "True" then
+                        focus[index].isItem = true
+                    else
+                        focus[index].isItem = false
+                    end
+                    callback()
                 end
             )
     end,

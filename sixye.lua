@@ -38,7 +38,7 @@ local function build_hex_list(frame, list)
                 :setPosition(31, 2)
             local callback = function() return build_hex_list(frame, self) end
             t.build_iota_menu(right_menu, focus, hex_index, callback)
-            basalt.debug("Selected iota #" .. hex_index)
+            --basalt.debug("Selected iota #" .. hex_index)
         end
     )
     for i = 1, #focus do
