@@ -37,6 +37,7 @@ local function build_hex_list(frame, right_menu, focus, list)
         :onSelect(
             function(self, event, item)
                 local hex_index = self:getItemIndex()
+                -- Memory leak here as new frames keep getting made?
                 right_menu = frame:addScrollableFrame()
                     :setSize(20, 17)
                     :setPosition(31, 2)
