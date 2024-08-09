@@ -10,7 +10,7 @@ local function swap(Table, Pos1, Pos2)
 end
 
 local function build_right_menu(frame)
-    local right_menu = frame:addScrollableFrame()
+    local right_menu = frame:addScrollableFrame("right_menu")
         :setSize(20, 17)
         :setPosition(31, 2)
         :setForeground(colors.white)
@@ -21,14 +21,14 @@ local function build_right_menu(frame)
     return right_menu
 end
 
-local function build_hex_list(frame, right_menu, focus, list)
+local function build_hex_list(frame, focus, list)
     local selection = 1
     local offset = 0
     if list then
         selection = list:getItemIndex()
         offset = list:getOffset()
     else
-        list = frame:addList()
+        list = frame:addList("hex_list")
     end
     local hex_list = list
         :clear()
@@ -38,11 +38,14 @@ local function build_hex_list(frame, right_menu, focus, list)
             function(self, event, item)
                 local hex_index = self:getItemIndex()
                 -- Memory leak here as new frames keep getting made?
-                right_menu = frame:addScrollableFrame()
+                local right_menu = frame:addScrollableFrame("right_menu")
                     :setSize(20, 17)
                     :setPosition(31, 2)
-                local callback = function() return build_hex_list(frame, right_menu, focus, self) end
+                local function callback()
+                    return build_hex_list(frame, focus, self)
+                end
                 t.build_iota_menu(right_menu, focus, hex_index, callback)
+                basalt.debug(basalt.memory())
                 --basalt.debug("Selected iota #" .. hex_index)
             end
         )
@@ -54,6 +57,7 @@ local function build_hex_list(frame, right_menu, focus, list)
     hex_list:selectItem(selection)
     hex_list:setOffset(offset)
 
+    basalt.debug(basalt.memory())
     return hex_list
 end
 
@@ -63,7 +67,7 @@ local main = basalt.createFrame()
 
 local right_menu = build_right_menu(main)
 
-local hex_list = build_hex_list(main, right_menu, focus)
+local hex_list = build_hex_list(main, focus)
 
 local up_button = main:addButton()
     :setSize(3,3)
@@ -77,11 +81,12 @@ local up_button = main:addButton()
     :onClick(
         function(self,event,button,x,y)
             if(event=="mouse_click")then
+                basalt.debug(basalt.memory())
                 --basalt.debug("Left mousebutton got clicked!")
                 local index = hex_list:getItemIndex()
                 if index > 1 then
                     swap(focus, index, index-1)
-                    build_hex_list(main, right_menu, focus, hex_list)
+                    build_hex_list(main, focus, hex_list)
                     hex_list:selectItem(index-1)
                 end
             end
@@ -100,11 +105,12 @@ local down_button = main:addButton()
     :onClick(
         function(self,event,button,x,y)
             if(event=="mouse_click")then
+                basalt.debug(basalt.memory())
                 --basalt.debug("Left mousebutton got clicked!")
                 local index = hex_list:getItemIndex()
                 if index < #focus then
                     swap(focus, index, index+1)
-                    build_hex_list(main, right_menu, focus, hex_list)
+                    build_hex_list(main, focus, hex_list)
                     hex_list:selectItem(index+1)
                 end
             end
